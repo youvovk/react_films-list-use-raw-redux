@@ -6,8 +6,10 @@ module.exports = {
     es6: true,
     browser: true
   },
+  parser: "babel-eslint",
   parserOptions: {
-    sourceType: "module"
+    sourceType: "module",
+    ecmaVersion: 9,
   },
   "globals": {
     it: false
@@ -15,6 +17,14 @@ module.exports = {
   rules: {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     'no-console': 'off',
-    "no-param-reassign": 0
+    "no-param-reassign": 0,
+    "import/prefer-default-export": 0,
+    "jsx-a11y/label-has-for": [2, {
+      "components": ["Label"],
+      "required": {
+        "every": ["id"]
+      },
+      "allowChildren": false
+    }]
   }
 };
