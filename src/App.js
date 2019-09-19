@@ -9,6 +9,18 @@ export class App extends Component {
     filmsList: films,
   };
 
+  handleAddFilm = (newFilm) => {
+    this.setState(prevState => ({
+      filmsList: [
+        ...prevState.filmsList,
+        {
+          id: prevState.filmsList[prevState.filmsList.length - 1].id + 1,
+          ...newFilm,
+        },
+      ],
+    }));
+  };
+
   render() {
     const { filmsList } = this.state;
 
@@ -18,7 +30,7 @@ export class App extends Component {
           <FilmsList films={filmsList} />
         </div>
         <div className="sidebar">
-          <NewFilm />
+          <NewFilm onAdd={this.handleAddFilm} />
         </div>
       </div>
     );

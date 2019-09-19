@@ -13,7 +13,6 @@ export const FormField = memo((props) => {
     placeholder,
     value,
   } = props;
-  console.log(props);
 
   const inputClass = cx('input', { 'is-danger': !!error });
   const controlClass = cx('control', { 'has-icons-right': !!error });
