@@ -4,6 +4,12 @@ import { FilmsList } from './components/FilmsList';
 import { NewFilm } from './components/NewFilm';
 import { films } from './data';
 import { FormField } from './components/FormField';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+} from 'react-router-dom';
+import { FilmDetails } from './components/FilmDetails';
 
 const API_URL = 'http://www.omdbapi.com/?apikey=2f4a38c9&t=';
 
@@ -63,28 +69,53 @@ export class App extends Component {
     const { filmsList, searchWord } = this.state;
 
     return (
-      <div className="page">
-        <div className="content">
-          <FormField
-            value={searchWord}
-            name="searchWord"
-            placeholder="Type search word"
-            label="Search film"
-            onChange={this.handleSearchChange}
-          />
-          <button
-            onClick={() => this.searchFilm(searchWord)}
-            type="button"
-            className="button is-primary"
-          >
-            Search film
-          </button>
-          <FilmsList films={filmsList} />
+      <BrowserRouter>
+        <div className="page">
+          <div className="content">
+            <div className="box">
+              <FormField
+                value={searchWord}
+                name="searchWord"
+                placeholder="Type search word"
+                label="Search film"
+                onChange={this.handleSearchChange}
+              />
+              <button
+                onClick={() => this.searchFilm(searchWord)}
+                type="button"
+                className="button is-primary"
+              >
+                Search film
+              </button>
+            </div>
+
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => (
+                  <FilmsList films={filmsList} />
+                )}
+              />
+              <Route
+                exact
+                path="/film/:id"
+                render={({ match }) => {
+                  const film = filmsList
+                    .find(f => String(f.id) === match.params.id);
+
+                  return (
+                    <FilmDetails {...film} />
+                  );
+                }}
+              />
+            </Switch>
+          </div>
+          <div className="sidebar">
+            <NewFilm onAdd={this.handleAddFilm} />
+          </div>
         </div>
-        <div className="sidebar">
-          <NewFilm onAdd={this.handleAddFilm} />
-        </div>
-      </div>
+      </BrowserRouter>
     );
   }
 }

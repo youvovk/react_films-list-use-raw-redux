@@ -104,8 +104,6 @@ export class NewFilm extends Component {
       imdbUrl,
     } = this.state;
 
-    console.log(this.state);
-
     return (
       <form onSubmit={this.handleSubmit}>
         <FormField
