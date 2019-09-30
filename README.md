@@ -2,6 +2,11 @@
 
 ## Task
 
+- remove `filmsList` field from `App` component
+- dispatch `addNewFilm` action inside `App` instead
+- subscribe to store in `FilmsList` and `FilmDetails`(do not forget to unsubscribe)
+- rewrite Routes: pass `component` prop instead of `render`
+
 ## Workflow
 
 - Fork the repository with task
