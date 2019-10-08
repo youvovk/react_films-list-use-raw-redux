@@ -2,14 +2,40 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { store } from '../../store/index';
+
 export class FilmDetails extends Component {
+  state = {
+    film: [],
+  };
+
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(this.getFilmsList);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  getFilmsList = () => {
+    const { match: { params: { id } } } = this.props;
+
+    const film = store.getState().films.find(oneFilm => String(oneFilm.id) === id);
+
+    this.setState({
+      film,
+    });
+  }
+
   render() {
     const {
-      title,
-      description,
-      imgUrl,
-      imdbUrl,
-    } = this.props;
+      film: {
+        title,
+        description,
+        imgUrl,
+        imdbUrl,
+      },
+    } = this.state;
 
     return (
       <div className="card">
@@ -48,10 +74,11 @@ export class FilmDetails extends Component {
 }
 
 FilmDetails.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  imgUrl: PropTypes.string.isRequired,
-  imdbUrl: PropTypes.string.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
 };
 
 FilmDetails.defaultProps = {

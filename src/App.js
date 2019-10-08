@@ -1,38 +1,53 @@
 import React, { Component } from 'react';
+
 import './App.scss';
-import { FilmsList } from './components/FilmsList';
-import { NewFilm } from './components/NewFilm';
-import { films } from './data';
-import { FormField } from './components/FormField';
+
 import {
-  BrowserRouter,
+  HashRouter,
   Switch,
   Route,
+  withRouter,
 } from 'react-router-dom';
+import { store, addNewFilm } from './store/index';
+import { FilmsList } from './components/FilmsList';
+import { NewFilm } from './components/NewFilm';
+import { FormField } from './components/FormField';
 import { FilmDetails } from './components/FilmDetails';
 
-const API_URL = 'http://www.omdbapi.com/?apikey=2f4a38c9&t=';
+const API_URL = 'https://www.omdbapi.com/?apikey=2f4a38c9&t=';
+const FilmDetailsWithRouter = withRouter(FilmDetails);
 
 export class App extends Component {
   state = {
-    filmsList: films,
+    filmsList: [],
     searchWord: '',
   };
 
+  unsubscribe = null;
+
   componentDidMount() {
-    this.searchFilm('spider');
+    this.unsubscribe = store.subscribe(this.getFilmsList);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  getFilmsList = () => {
+    this.setState({
+      filmsList: [...store.getState().films],
+    });
   }
 
   handleAddFilm = (newFilm) => {
-    this.setState(prevState => ({
-      filmsList: [
-        ...prevState.filmsList,
-        {
-          id: prevState.filmsList[prevState.filmsList.length - 1].id + 1,
-          ...newFilm,
-        },
-      ],
-    }));
+    const prevState = store.getState().films;
+
+    store.dispatch(addNewFilm(
+      {
+        id: prevState[prevState.length - 1].id + 1,
+        ...newFilm,
+      },
+    ));
   };
 
   handleSearchChange = ({ target }) => {
@@ -59,17 +74,15 @@ export class App extends Component {
           imdbUrl: Website,
         };
 
-        this.setState(prevState => ({
-          filmsList: [...prevState.filmsList, newFilm],
-        }));
+        store.dispatch(addNewFilm(newFilm));
       });
   };
 
   render() {
-    const { filmsList, searchWord } = this.state;
+    const { searchWord } = this.state;
 
     return (
-      <BrowserRouter>
+      <HashRouter>
         <div className="page">
           <div className="content">
             <div className="box">
@@ -93,21 +106,12 @@ export class App extends Component {
               <Route
                 exact
                 path="/"
-                render={() => (
-                  <FilmsList films={filmsList} />
-                )}
+                component={FilmsList}
               />
               <Route
                 exact
                 path="/film/:id"
-                render={({ match }) => {
-                  const film = filmsList
-                    .find(f => String(f.id) === match.params.id);
-
-                  return (
-                    <FilmDetails {...film} />
-                  );
-                }}
+                component={FilmDetailsWithRouter}
               />
             </Switch>
           </div>
@@ -115,7 +119,7 @@ export class App extends Component {
             <NewFilm onAdd={this.handleAddFilm} />
           </div>
         </div>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
