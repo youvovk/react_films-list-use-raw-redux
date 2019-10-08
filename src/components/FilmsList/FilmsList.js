@@ -5,6 +5,8 @@ import { store } from '../../store/index';
 import './FilmsList.scss';
 import { FilmCard } from '../FilmCard';
 
+const _ = require('lodash');
+
 export class FilmsList extends React.Component {
   state = {
     films: [],
@@ -32,7 +34,7 @@ export class FilmsList extends React.Component {
     return (
       <div className="films">
         {films.map(film => (
-          <FilmCard key={film.id} {...film} />
+          <FilmCard key={_.uniqueId('')} {...film} />
         ))}
       </div>
     );

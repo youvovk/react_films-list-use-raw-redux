@@ -16,6 +16,7 @@ import { FilmDetails } from './components/FilmDetails';
 
 const API_URL = 'https://www.omdbapi.com/?apikey=2f4a38c9&t=';
 const FilmDetailsWithRouter = withRouter(FilmDetails);
+const _ = require('lodash');
 
 export class App extends Component {
   state = {
@@ -44,7 +45,7 @@ export class App extends Component {
 
     store.dispatch(addNewFilm(
       {
-        id: prevState[prevState.length - 1].id + 1,
+        id: _.uniqueId(''),
         ...newFilm,
       },
     ));
